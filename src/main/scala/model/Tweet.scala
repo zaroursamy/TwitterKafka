@@ -19,7 +19,7 @@ object Tweet{
   def fromStatus(status: Status)={
 
     val g = status.getGeoLocation
-    val Seq(latitude, longitude) = Seq(Try(g.getLatitude).toOption, Try(g.getLongitude).toOption)
+    val (latitude, longitude) = (Try(g.getLatitude).toOption, Try(g.getLongitude).toOption)
     Tweet(
       UserTweet.fromStatus(status),
       Geo(latitude, longitude),
