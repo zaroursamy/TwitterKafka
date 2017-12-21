@@ -18,10 +18,6 @@ import shapeless.the
 
 trait ProjectEncoderDecoder {
 
-  implicit val encodeUUID: Encoder[UUID] = Encoder.encodeString.contramap[UUID](_.toString)
-  implicit val encodeInstant: Encoder[Instant] = Encoder.encodeString.contramap[Instant](_.toString)
-  implicit val decodeUUID: Decoder[UUID] = Decoder.decodeString.map[UUID](UUID.fromString)
-  implicit val decodeInstant: Decoder[Instant] = Decoder.decodeString.map[Instant](Instant.parse)
   implicit val userDecoder: Decoder[UserTweet] = deriveDecoder[UserTweet]
   implicit val userEncoder: Encoder[UserTweet] = deriveEncoder[UserTweet]
   implicit val geoDecoder: Decoder[Geo] = deriveDecoder[Geo]
@@ -32,12 +28,6 @@ trait ProjectEncoderDecoder {
 }
 
 object TweetSerde extends ProjectEncoderDecoder {
-
-
-  implicit val customConfig: Configuration = Configuration.default.withDefaults.withDiscriminator("_typehint")
-
-  lazy val decoder: ConfiguredDecoder[Tweet] = the[ConfiguredDecoder[Tweet]]
-
 
   def toJson(tweet: Tweet): Json = {
     import io.circe.syntax._
