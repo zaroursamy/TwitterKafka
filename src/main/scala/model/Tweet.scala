@@ -2,28 +2,33 @@ package model
 
 import twitter4j.{GeoLocation, Status, User}
 
+import scala.util.Try
+
 /**
   * Created by zarour on 21/12/2017.
   */
 
 sealed trait Event
 
-case class Geo(lat:Double,
-               long:Double)
+case class Geo(lat:Option[Double],
+               long:Option[Double])
 
 case class Tweet(user: UserTweet, geoLocation: Geo, tweet: String) extends Event
 
 object Tweet{
   def fromStatus(status: Status)={
+
+    val g = status.getGeoLocation
+    val Seq(latitude, longitude) = Seq(Try(g.getLatitude).toOption, Try(g.getLongitude).toOption)
     Tweet(
-      UserTweet.fromUser(status),
-      Geo(status.getGeoLocation.getLatitude, status.getGeoLocation.getLongitude),
+      UserTweet.fromStatus(status),
+      Geo(latitude, longitude),
       status.getText
     )
   }
 }
 
-case class UserTweet(description:String,
+case class UserTweet(description:Option[String],
                      id:Long,
                      location:String,
                      lang:String,
@@ -32,11 +37,11 @@ case class UserTweet(description:String,
                     )
 
 object UserTweet{
-  def fromUser(status:Status): UserTweet = {
+  def fromStatus(status:Status): UserTweet ={
     val user = status.getUser
     import user._
     UserTweet(
-      description = getDescription,
+      description = Option(getDescription).flatMap(Option(_)),
       id = getId,
       location = getLocation,
       lang = getLang,

@@ -10,14 +10,14 @@ import utils.TweetSerde
 class TestTweetSerde extends FunSuite {
   test("to json") {
 
-    val userTweet = UserTweet("desc", 0L, "paris", "fr", "samas", 2)
-    val tweet = Tweet(userTweet, Geo(0, 0), "this is my first tweet")
+    val userTweet = UserTweet(Some("desc"), 0L, "paris", "fr", "samas", 2)
+    val tweet = Tweet(userTweet, Geo(Some(0), None), "this is my first tweet")
 
     val json = TweetSerde.toJson(tweet)
     val str = json.toString()
 
     println(s"json: ${json.toString}")
-    println(s"tweet: ${tweet}")
+    println(s"tweet: $tweet")
 
     assert(TweetSerde.toJson(tweet) == json)
     assert(TweetSerde.fromJson(str).right.get == tweet)

@@ -15,6 +15,8 @@ import org.apache.kafka.streams.StreamsConfig
 import twitter4j._
 import utils.TweetSerde
 
+import scala.util.Try
+
 
 /**
   * Created by zarour on 13/04/2017.
@@ -83,8 +85,8 @@ object TweetConsumer extends App {
   props.put("key.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
   props.put("group.id", "something")
   props.put(StreamsConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
-  props.put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer")
-  props.put("value.deserializer", "org.apache.kafka.common.serialization.ByteArraySerializer")
+  props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
 
 
 
@@ -108,8 +110,8 @@ object TweetProducer extends App {
 
   props.put(ProducerConfig.BOOTSTRAP_SERVERS_CONFIG, "localhost:9092")
   props.put(ProducerConfig.KEY_SERIALIZER_CLASS_CONFIG, "org.apache.kafka.common.serialization.StringSerializer")
-  props.put("value.serializer", "org.apache.kafka.common.serialization.ByteArraySerializer")
-  props.put("value.deserializer", "org.apache.kafka.common.serialization.ByteArraySerializer")
+  props.put("value.serializer", "org.apache.kafka.common.serialization.StringSerializer")
+  props.put("value.deserializer", "org.apache.kafka.common.serialization.StringDeserializer")
 
   val producer = new KafkaProducer[String, String](props)
 
@@ -119,11 +121,9 @@ object TweetProducer extends App {
     override def onScrubGeo(userId: Long, upToStatusId: Long): Unit = {}
 
     override def onStatus(status: Status): Unit = {
-      val geoLocation = status.getGeoLocation
-      val geo = Geo(geoLocation.getLatitude, geoLocation.getLongitude)
 
-      val tweetModel = Tweet(UserTweet.fromUser(status), geo, status.getText)
-      val tweetSer = TweetSerde.toJson(tweetModel).toString
+      val tweetModel: Tweet = Tweet.fromStatus(status)
+      val tweetSer = Try(TweetSerde.toJson(tweetModel).toString).toOption.getOrElse("")
 
       val message = new ProducerRecord[String, String]("tweets", null, tweetSer)
       producer.send(message)
