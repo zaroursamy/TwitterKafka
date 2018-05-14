@@ -1,14 +1,9 @@
 package utils
 
-import java.time.Instant
-import java.util.UUID
-
-import io.circe.generic.extras.Configuration
-import io.circe.generic.extras.decoding._
+import io.circe.Decoder.Result
 import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, _}
 import model.{Geo, Tweet, UserTweet}
-import shapeless.the
 
 
 
@@ -35,7 +30,7 @@ object TweetSerde extends ProjectEncoderDecoder {
   }
 
 
-  def fromJson(s: String) = {
+  def fromJson(s: String): Result[Tweet] = {
     import cats.syntax.either._
     import io.circe._
     import io.circe.parser._
@@ -43,4 +38,12 @@ object TweetSerde extends ProjectEncoderDecoder {
     val json: Json = parse(s).getOrElse(Json.Null)
     json.as[Tweet]
   }
+}
+
+object TwitterIds{
+  def userId: Map[String, Long] = Map(
+    "pnl" -> 2396018036L,
+    "jul" -> 4113487139L,
+    "booba" -> 179530581L
+  )
 }

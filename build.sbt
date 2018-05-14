@@ -25,3 +25,7 @@ libraryDependencies ++= Seq(
   "circe-parser",
   "circe-generic-extras"
 ).map(x => "io.circe" %% x % circeVersion)
+
+val kafka_streams_scala_version = "0.2.1"
+
+libraryDependencies ++= Seq("com.lightbend" %% "kafka-streams-scala" % kafka_streams_scala_version)
