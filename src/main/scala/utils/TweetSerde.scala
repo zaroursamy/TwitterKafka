@@ -5,8 +5,6 @@ import io.circe.generic.semiauto.{deriveDecoder, deriveEncoder}
 import io.circe.{Decoder, _}
 import model.{Geo, Tweet, UserTweet}
 
-
-
 /**
   * Created by zarour on 21/12/2017.
   */
@@ -28,7 +26,6 @@ object TweetSerde extends ProjectEncoderDecoder {
     import io.circe.syntax._
     tweet.asJson
   }
-
 
   def fromJson(s: String): Result[Tweet] = {
     import cats.syntax.either._

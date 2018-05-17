@@ -12,6 +12,7 @@ import scala.util.{Failure, Success, Try}
 /**
   * Created by zarour on 20/12/2017.
   */
+
 object StreamRawToTweet extends App {
 
   val props = new Properties

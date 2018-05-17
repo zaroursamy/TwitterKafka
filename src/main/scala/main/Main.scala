@@ -1,9 +1,10 @@
 package main
 
 import java.util
-import config.{KafkaConfig, TwitterConfig, TwitterKafkaConsumer, TwitterKafkaProducer}
+
+import config.{KafkaConfig, TwitterConfig, TwitterKafkaProducer}
+import kafka.{TwitterKafkaConsumer, TwitterKafkaProducer}
 import org.apache.kafka.clients.consumer.ConsumerRecords
-import twitter4j._
 import utils.{KafkaUtil, TwitterIds}
 
 
